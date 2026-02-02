@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Login</title>
+    <link rel="stylesheet" href="/css/authentication/login.css">
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div class="login-container">
+    <div class="orb-wrapper">
+        <div class="orb"></div>
+        <div class="orb-ring"></div>
+    </div>
+
+    <div class="status-text">
+        <p class="awaiting">Awaiting authentication...</p>
+        <p class="listening">Listening...</p>
+    </div>
+
+    <form class="login-form">
+        <input type="text" placeholder="Email" class="input-field" id="email">
+        <div class="password-wrapper">
+            <input type="password" placeholder="Password" class="input-field" id="password">
+        </div>
+        <button type="submit" class="login-btn" id="login">LOG IN</button>
+        <a href="signup" class="login-btn" id="signup-redirect">SignUp</a>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="/js/login/login.js"></script>
+<script src="/js/login/logindata.js"></script>
+</body>
+</html>

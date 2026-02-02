@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Login</title>
+    <link rel="stylesheet" href="/css/authentication/signup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div class="login-container">
+    <div class="orb-wrapper">
+        <div class="orb"></div>
+        <div class="orb-ring"></div>
+    </div>
+
+    <div class="status-text">
+        <p class="awaiting">Awaiting authentication...</p>
+        <p class="listening">Listening...</p>
+    </div>
+
+    <form class="login-form">
+        <input type="text" placeholder="Username" class="input-field" id="username" required>
+        <input type="email" placeholder="Email Address" class="input-field" id="email" required>
+
+        <div class="su-pass-group">
+            <input type="password" placeholder="Create Password"
+                   class="input-field" id="password" required>
+            <span class="toggle-password" data-target="password">👁</span>
+        </div>
+
+        <div class="su-pass-group">
+            <input type="password" placeholder="Confirm Password"
+                   class="input-field" id="confirm_password" required>
+            <span class="toggle-password" data-target="confirm_password">👁</span>
+        </div>
+
+
+        <button type="submit" class="login-btn" id="signup">CREATE ACCOUNT</button>
+
+        <a href="login" class="login-btn" id="login-redirect">Access Existing Profile (Log In)</a>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="/js/login/login.js"></script>
+<script src="/js/login/signupdata.js/"></script>
+</body>
+</html>

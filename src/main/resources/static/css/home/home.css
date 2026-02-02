@@ -1,0 +1,86 @@
+:root {
+    --bg: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --neon-cyan: #22d3ee;
+    --purple-grad: linear-gradient(90deg, #6366f1, #a855f7);
+    --orange-grad: linear-gradient(90deg, #22c55e, #f59e0b);
+    --text: #ffffff;
+    --text-dim: #94a3b8;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at top, #1e1b4b, #0f172a, #2e1065);
+    background-attachment: fixed;
+    color: var(--text);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.container { width: 100%; max-width: 850px; }
+
+header { text-align: center; margin-bottom: 40px; }
+header h1 { font-size: 2.8rem; margin: 0; font-weight: 700; }
+#live-clock { color: var(--text-dim); margin-top: 10px; font-size: 1.1rem; }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    border: 2px solid var(--neon-cyan);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-header { display: flex; align-items: center; gap: 12px; color: var(--text-dim); margin-bottom: 15px; }
+.metric-val { font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
+.unit { font-size: 1rem; color: var(--text-dim); }
+.trend-up { color: #4ade80; font-size: 0.9rem; }
+
+.ecg-container {
+    background: #000;
+    border-radius: 12px;
+    padding: 15px;
+    position: relative;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+canvas { width: 100%; height: 100%; }
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 16px 20px;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-purple { background: var(--purple-grad); }
+.btn-orange { background: var(--orange-grad); }
+
+.tag-row { display: flex; gap: 15px; font-size: 0.85rem; color: var(--text-dim); margin-top: 10px; }
+.tag { display: flex; align-items: center; gap: 5px; }
+.dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; }
+
+@media (max-width: 650px) { .grid { grid-template-columns: 1fr; } }
