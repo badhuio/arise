@@ -18,4 +18,7 @@ public class AuthController {
 
     @GetMapping("/home")
     public String home() { return "home/home";}
+
+    @GetMapping("/playlist")
+    public String playlist() {return "playlist/playlist";}
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/playlist/playlist.css">
+</head>
+<body>
+<div class="container">
+    <nav class="sidebar">
+        <h2>PlayList</h2>
+        <div id="footballBtn" class="menu-title">Learning ▼</div>
+        <ul id="footballList" class="menu-list hidden">
+            <li>Java</li>
+            <li>Python</li>
+            <li>Cybersecurity</li>
+        </ul>
+
+        <br>
+
+        <button id="add-btn">+ Create New</button>
+    </nav>
+
+<!--    popup for sidebar playlist list-->
+
+    <div id="popup" class="popup hidden">
+        <div class="popup-box">
+            <h3>Create Playlist</h3>
+
+            <input type="text" id="playlistName" placeholder="Playlist name">
+
+            <input type="text" id="subItems" placeholder="Sub headings">
+
+            <div class="popup-actions">
+                <button id="createPlaylist">Create</button>
+                <button id="closePopup">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!--end-->
+
+
+    <main class="content">
+        <header>
+            <h1>My Collections</h1>
+            <input type="text" id="search" placeholder="Search playlists...">
+        </header>
+
+        <div class="playlist-grid" id="playlist-grid">
+        </div>
+    </main>
+</div>
+<script src="/js/playlist/playlist.js"></script>
+</body>
+</html>
