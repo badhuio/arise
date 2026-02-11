@@ -16,47 +16,73 @@
     </header>
 
     <div class="grid">
+
         <div class="card">
-            <div class="card-header"><i class="fas fa-heart-pulse" style="color: #f43f5e;"></i> Heart Rate</div>
+            <div class="card-header">
+                <i class="fas fa-heart-pulse" style="color: #f43f5e;"></i> Heart Rate
+            </div>
             <div class="metric-val">72 <span class="unit">BPM</span></div>
             <div class="trend-up"><i class="fas fa-arrow-down"></i> 2% from avg</div>
         </div>
 
         <div class="card">
-            <div class="card-header"><i class="fas fa-wind" style="color: #22d3ee;"></i> Blood Oxygen</div>
+            <div class="card-header">
+                <i class="fas fa-wind" style="color: #22d3ee;"></i> Blood Oxygen
+            </div>
             <div class="metric-val">98%</div>
             <div class="trend-up">Normal</div>
         </div>
 
         <div class="card">
-            <div class="card-header"><i class="fas fa-moon" style="color: #818cf8;"></i> Sleep Score</div>
+            <div class="card-header">
+                <i class="fas fa-moon" style="color: #818cf8;"></i> Sleep Score
+            </div>
             <div class="metric-val">8h 12m</div>
             <div style="color: #818cf8; font-size: 0.9rem;">Deep: 2h 45m</div>
         </div>
 
         <div class="card">
-            <div class="card-header"><i class="fas fa-wave-square" style="color: #a855f7;"></i> ECG</div>
+            <div class="card-header">
+                <i class="fas fa-wave-square" style="color: #a855f7;"></i> ECG
+            </div>
             <div class="ecg-container">
-                <div style="position: absolute; top: 5px; left: 10px; font-size: 0.7rem; z-index: 10;">Sinus Rhythm</div>
+                <div style="position: absolute; top: 5px; left: 10px; font-size: 0.7rem; z-index: 10;">
+                    Sinus Rhythm
+                </div>
                 <canvas id="ecgCanvas"></canvas>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-header"><i class="fas fa-music" style="color: #f472b6;"></i> Unified Playlist</div>
-            <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">Audio, Videos & Web Links</div>
-            <button class="btn btn-purple"><a href="playlist">Manage Playlist <i class="fas fa-chevron-right"></i></a></button>
+            <div class="card-header">
+                <i class="fas fa-music" style="color: #f472b6;"></i> Unified Playlist
+            </div>
+            <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px;">
+                Audio, Videos & Web Links
+            </div>
+
+            <!-- FIXED BUTTON -->
+            <a href="playlist" class="btn btn-purple">
+                Manage Playlist <i class="fas fa-chevron-right"></i>
+            </a>
         </div>
 
         <div class="card">
-            <div class="card-header"><i class="fas fa-circle-check" style="color: #fbbf24;"></i> Daily Tasks</div>
+            <div class="card-header">
+                <i class="fas fa-circle-check" style="color: #fbbf24;"></i> Daily Tasks
+            </div>
             <div class="tag-row">
                 <div class="tag"><span class="dot" style="background: #38bdf8;"></span> health ace</div>
                 <div class="tag"><span class="dot" style="background: #10b981;"></span> 17924</div>
                 <div class="tag"><span class="dot" style="background: #a855f7;"></span> Lirvs</div>
             </div>
-            <button class="btn btn-orange">Manage Tasks <i class="fas fa-chevron-right"></i></button>
+
+            <!-- FIXED BUTTON -->
+            <a href="tasks" class="btn btn-orange">
+                Manage Tasks <i class="fas fa-chevron-right"></i>
+            </a>
         </div>
+
     </div>
 </div>
 

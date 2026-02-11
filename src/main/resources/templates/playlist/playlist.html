@@ -3,52 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayList Manager</title>
     <link rel="stylesheet" href="/css/playlist/playlist.css">
 </head>
 <body>
 <div class="container">
     <nav class="sidebar">
         <h2>PlayList</h2>
-        <div id="footballBtn" class="menu-title">Learning ▼</div>
-        <ul id="footballList" class="menu-list hidden">
-            <li>Java</li>
-            <li>Python</li>
-            <li>Cybersecurity</li>
-        </ul>
-
+        <div id="playlists-container"></div>
         <br>
-
-        <button id="add-btn">+ Create New</button>
+        <button id="add-btn">+ Create New Playlist</button>
     </nav>
-
-<!--    popup for sidebar playlist list-->
 
     <div id="popup" class="popup hidden">
         <div class="popup-box">
             <h3>Create Playlist</h3>
-
             <input type="text" id="playlistName" placeholder="Playlist name">
-
-            <input type="text" id="subItems" placeholder="Sub headings">
-
+            <input type="text" id="subItems" placeholder="Initial sub-headings (comma separated)">
             <div class="popup-actions">
-                <button id="createPlaylist">Create</button>
-                <button id="closePopup">Cancel</button>
+                <button id="createPlaylist" class="btn-accent">Create</button> <br><br>
+                <button id="closePopup" class="btn-accent">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!--end-->
+    <div id="content-popup" class="popup hidden">
+        <div class="popup-box">
+            <h3>Add Content</h3>
+            <input type="text" id="contentTitle" placeholder="Title (e.g. Favorite Song)">
 
+            <select id="contentType" class="modern-select">
+                <option value="music">Music (URL or Local)</option>
+                <option value="video">Video (Local File)</option>
+                <option value="photo">Photo (Local File)</option>
+                <option value="document">Document (Local File)</option>
+                <option value="link">Link/URL</option>
+            </select>
+
+            <div id="input-wrapper">
+                <input type="file" id="fileInput" class="modern-select">
+                <input type="text" id="contentSource" class="hidden" placeholder="Paste Link/URL here">
+            </div>
+
+            <div class="popup-actions">
+                <button id="saveContent" class="btn-accent">Add to Collection</button> <br> <br>
+                <button id="closeContentPopup" class="btn-accent">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <main class="content">
         <header>
             <h1>My Collections</h1>
-            <input type="text" id="search" placeholder="Search playlists...">
         </header>
-
-        <div class="playlist-grid" id="playlist-grid">
-        </div>
+        <div class="playlist-grid" id="playlist-grid"></div>
     </main>
 </div>
 <script src="/js/playlist/playlist.js"></script>

@@ -3,6 +3,7 @@
     --card-bg: #1e293b;
     --accent: #38bdf8;
     --text: #f8fafc;
+    --danger: #ef4444;
 }
 
 body {
@@ -12,118 +13,78 @@ body {
     margin: 0;
 }
 
-.container {
-    display: flex;
-    height: 100vh;
-}
+.container { display: flex; height: 100vh; }
 
 .sidebar {
-    width: 250px;
+    width: 300px;
     background: #020617;
     padding: 20px;
     border-right: 1px solid #334155;
-}
-
-.content {
-    flex: 1;
-    padding: 40px;
     overflow-y: auto;
 }
 
-.playlist-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
-}
+/* Sidebar Playlist Items */
+.playlist-item-container { margin-bottom: 15px; }
 
-.card {
+.menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background: var(--card-bg);
-    padding: 15px;
-    border-radius: 12px;
-    transition: transform 0.2s, hover 0.2s;
+    border-radius: 10px;
+    padding: 10px;
     cursor: pointer;
-    border: 1px solid transparent;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent);
-}
+.menu-title { display: flex; align-items: center; gap: 8px; flex-grow: 1; font-weight: bold; }
+.item-actions { display: flex; gap: 5px; }
 
-.card img {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 8px;
-    object-fit: cover;
-}
+.menu-list { padding-left: 15px; list-style: none; margin-top: 5px; }
+.hidden { display: none !important; }
 
-.card h3 {
-    margin: 15px 0 5px;
-    font-size: 1.1rem;
-}
-
-.card p {
-    color: #94a3b8;
-    font-size: 0.85rem;
-}
-
-/* sidebar --> */
-
-.menu-title {
-    cursor: pointer;
-    font-weight: bold;
+.sub-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 8px;
-    background: #2c3e50;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.sub-item:hover { background: rgba(255, 255, 255, 0.05); border-radius: 6px; }
+
+/* Buttons & Popups */
+.icon-btn, .sub-icon-btn {
+    background: #334155;
+    border: none;
     color: white;
-    width: 150px;
     border-radius: 4px;
-}
-
-.menu-list {
-    padding-left: 20px;
-    margin-top: 4px;
-    list-style-type: circle;
-}
-
-.menu-list li {
-    margin: 6px 0;
     cursor: pointer;
+    width: 24px;
+    height: 24px;
 }
-
-.hidden {
-    display: none;
-}
-
 
 .popup {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 999;
 }
 
-.popup-box {
-    background: black;
-    padding: 20px;
-    width: 300px;
-    border-radius: 8px;
-}
+.popup-box { background: var(--card-bg); padding: 25px; width: 380px; border-radius: 16px; border: 1px solid #334155; }
+.popup-box input, .modern-select { width: 100%; padding: 12px; margin-bottom: 12px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; box-sizing: border-box; }
 
-.popup-box input,
-.popup-box textarea {
-    width: 90%;
-    margin: 8px 0;
-    padding: 8px;
-}
+.btn-accent { background: var(--accent); color: #020617; font-weight: bold; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; }
 
-.popup-actions {
-    display: flex;
-    justify-content: space-between;
-}
+/* Grid & Cards */
+.playlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px 0; }
+.content-card { background: var(--card-bg); border-radius: 16px; padding: 15px; border: 1px solid #334155; }
+.card-title { font-size: 1.1rem; font-weight: bold; margin: 10px 0; }
+.card-type { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; }
 
-.hidden {
-    display: none;
-}
+audio { width: 100%; height: 32px; margin-top: 10px; filter: invert(100%) hue-rotate(180deg); }
+.card-btn { background: #334155; color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer; }
+#add-btn { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
