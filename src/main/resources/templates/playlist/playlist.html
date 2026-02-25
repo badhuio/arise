@@ -45,6 +45,9 @@
                 <input type="text" id="contentSource" class="hidden" placeholder="Paste Link/URL here">
             </div>
 
+            <!-- ✅ ADDED THIS HIDDEN INPUT -->
+            <input type="hidden" id="selectedPlaylistId" value="">
+
             <div class="popup-actions">
                 <button id="saveContent" class="btn-accent">Add to Collection</button> <br> <br>
                 <button id="closeContentPopup" class="btn-accent">Cancel</button>
@@ -59,6 +62,7 @@
         <div class="playlist-grid" id="playlist-grid"></div>
     </main>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/playlist/playlist.js"></script>
 </body>
 </html>
