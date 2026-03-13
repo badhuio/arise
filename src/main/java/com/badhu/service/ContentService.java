@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.LongFunction;
 
 @Service
 public class ContentService {
@@ -54,5 +55,9 @@ public class ContentService {
     // NEW: For AJAX playlist filtering
     public List<ContentEntity> getContentsByPlaylistId(Long playlistId) {
         return contentRepository.findByPlaylistId(playlistId);
+    }
+
+    public void deleteContent(Long contentId){
+        contentRepository.deleteById(contentId);
     }
 }

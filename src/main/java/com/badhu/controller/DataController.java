@@ -8,6 +8,7 @@ import com.badhu.entity.PlaylistEntity;
 import com.badhu.service.ContentService;
 import com.badhu.service.PlaylistService;
 import com.badhu.service.SignupService;
+import com.badhu.service.SubheadService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,11 +20,17 @@ public class DataController {
     private final SignupService signupService;
     private final PlaylistService playlistService;
     private final ContentService contentService;
+    private final SubheadService subheadService;
 
-    public DataController(SignupService signupService, PlaylistService playlistService, ContentService contentService) {
+    public DataController(SignupService signupService,
+                          PlaylistService playlistService,
+                          ContentService contentService,
+                          SubheadService subheadService) {
+
         this.signupService = signupService;
         this.playlistService = playlistService;
         this.contentService = contentService;
+        this.subheadService = subheadService;
     }
 
     @PostMapping("/signup_saving")
@@ -71,4 +78,20 @@ public class DataController {
     public List<ContentEntity> getContentsByPlaylist(@PathVariable Long playlistId) {
         return contentService.getContentsByPlaylistId(playlistId);
     }
+
+    @DeleteMapping("/deletePlaylist/{playlistId}")
+    public void deletePlaylist(@PathVariable Long playlistId){
+         playlistService.deletePlaylist(playlistId);
+    }
+
+    @DeleteMapping("/deleteContent/{contentId}")
+    public void deleteContent(@PathVariable Long contentId){
+        contentService.deleteContent(contentId);
+    }
+
+    @DeleteMapping("/deleteSubheading/{subId}")
+    public void deleteSubItems(@PathVariable Long subId){
+        subheadService.deleteSubItems(subId);
+    }
+
 }

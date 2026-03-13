@@ -1,21 +1,24 @@
-const popup = document.getElementById("popup");
-const contentPopup = document.getElementById("content-popup");
-const addBtn = document.getElementById("add-btn");
-const saveContentBtn = document.getElementById("saveContent");
-const playlistContainer = document.getElementById("playlists-container");
-const grid = document.getElementById("playlist-grid");
+// playlist-ui.js
 
-const contentType = document.getElementById("contentType");
-const fileInput = document.getElementById("fileInput");
-const linkInput = document.getElementById("contentSource");
-const contentTitleInput = document.getElementById("contentTitle");
+// ─── DOM Elements ────────────────────────────────────────────────
+const popup                 = document.getElementById("popup");
+const contentPopup          = document.getElementById("content-popup");
+const subheadingPopup       = document.getElementById("subheading-popup");
+const addBtn                = document.getElementById("add-btn");
+const saveContentBtn        = document.getElementById("saveContent");
+const playlistContainer     = document.getElementById("playlists-container");
+const grid                  = document.getElementById("playlist-grid");
 
-let currentPlaylistId = null;
-let currentPlaylistName = "";
+const contentType           = document.getElementById("contentType");
+const fileInput             = document.getElementById("fileInput");
+const linkInput             = document.getElementById("contentSource");
+const contentTitleInput     = document.getElementById("contentTitle");
 
-// ───────────────────────────────────────────────
-// Input Switching
-// ───────────────────────────────────────────────
+let currentPlaylistId       = null;
+let currentPlaylistName     = "";
+
+
+// ─── Input Switching + File name preview ─────────────────────────
 contentType.onchange = () => {
     if (contentType.value === "link") {
         fileInput.classList.add("hidden");
@@ -26,7 +29,6 @@ contentType.onchange = () => {
     }
 };
 
-// Show selected filename
 fileInput.onchange = () => {
     const file = fileInput.files[0];
     if (file) {
@@ -34,17 +36,19 @@ fileInput.onchange = () => {
     }
 };
 
-// ───────────────────────────────────────────────
-// Popup controls
-// ───────────────────────────────────────────────
+
+// ─── Popup controls ──────────────────────────────────────────────
 addBtn.onclick = () => popup.classList.remove("hidden");
 document.getElementById("closePopup").onclick = () => popup.classList.add("hidden");
 document.getElementById("closeContentPopup").onclick = () => contentPopup.classList.add("hidden");
 
-// ───────────────────────────────────────────────
-// Content Card Rendering
-// ───────────────────────────────────────────────
-function renderContentCard({id, title, type, source}) {
+document.getElementById("closeSubheadingPopup").onclick = () => {
+    subheadingPopup.classList.add("hidden");
+};
+
+
+// ─── Pure UI: Render single content card ─────────────────────────
+function renderContentCard({ id, title, type, source }) {
     const card = document.createElement("div");
     card.className = "content-card";
     card.dataset.contentId = id || "";
@@ -53,7 +57,6 @@ function renderContentCard({id, title, type, source}) {
     let mediaHTML = "";
     let openLink = source;
 
-    // YouTube helper
     const getYouTubeEmbed = (url) => {
         let videoId = "";
         if (url.includes("youtube.com/watch?v=")) {
@@ -108,89 +111,29 @@ function renderContentCard({id, title, type, source}) {
         </div>
     `;
 
-    // Edit title (client-side for now)
     card.querySelector(".edit-card").onclick = () => {
         const newTitle = prompt("New title:", title);
         if (newTitle?.trim()) {
             card.querySelector(".card-title").textContent = newTitle.trim();
-            // TODO: send to backend (PUT /content/${id})
+            // TODO: save new title to backend if id exists
         }
     };
 
-    // Delete (client + future backend)
     card.querySelector(".delete-card").onclick = () => {
         if (!confirm("Delete this item?")) return;
         const contentId = card.dataset.contentId;
         if (contentId) {
-            // TODO: implement real delete
-            // $.ajax({ url: `/content/${contentId}`, method: "DELETE", success: () => card.remove() });
-            console.warn("Delete not implemented on server yet");
+            deleteContent(contentId, () => card.remove());
+        } else {
+            card.remove();
         }
-        card.remove();
     };
 
     grid.appendChild(card);
 }
 
-// ───────────────────────────────────────────────
-// Save Content
-// ───────────────────────────────────────────────
-saveContentBtn.onclick = () => {
-    if (!currentPlaylistId) {
-        alert("Please select a playlist first!");
-        return;
-    }
 
-    const title = contentTitleInput.value.trim();
-    const type = contentType.value;
-    const link = linkInput.value.trim();
-    const file = fileInput.files[0];
-
-    if (!title) return alert("Please enter a title");
-
-    if (type !== "link" && !file) {
-        return alert("Please select a file");
-    }
-    if (type === "link" && !link) {
-        return alert("Please enter a link/URL");
-    }
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("type", type);
-    formData.append("playlistId", currentPlaylistId);
-
-    if (type === "link") {
-        formData.append("source", link);
-    } else {
-        formData.append("file", file);
-    }
-
-    $.ajax({
-        url: "/saveContent",
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: (response) => {
-            alert("Content added!");
-            contentPopup.classList.add("hidden");
-            contentTitleInput.value = "";
-            fileInput.value = "";
-            linkInput.value = "";
-            // Reload current playlist content
-            loadContentForPlaylist(currentPlaylistId);
-        },
-        error: (xhr) => {
-            alert("Error: " + (xhr.responseText || "Could not save content"));
-            console.error(xhr);
-        }
-    });
-};
-
-// ───────────────────────────────────────────────
-// Playlist Item Creation
-// ───────────────────────────────────────────────
+// ─── Pure UI: Create playlist item with sub-items ────────────────
 function createPlaylistItem(name, subs = [], playlistId) {
     const container = document.createElement("div");
     container.className = "playlist-item-container";
@@ -213,45 +156,63 @@ function createPlaylistItem(name, subs = [], playlistId) {
     const ul = document.createElement("ul");
     ul.className = "menu-list hidden";
 
-    const renderSubItem = (text) => {
+    const renderSubItem = (text, subId = null) => {
         if (!text?.trim()) return;
+
         const li = document.createElement("li");
         li.className = "sub-item";
+        if (subId) li.dataset.subId = subId;
+
         li.innerHTML = `
             <span class="sub-text">${text.trim()}</span>
             <div style="display:flex; gap:5px;">
                 <button class="sub-icon-btn add-content-btn">+</button>
-                <button class="sub-icon-btn del-sub" style="color:var(--danger)">×</button>
+                <button class="sub-icon-btn del-sub" class="del-sub" style="color:var(--danger)">×</button>
             </div>
         `;
 
         li.querySelector(".add-content-btn").onclick = (e) => {
             e.stopPropagation();
             if (!currentPlaylistId) {
-                alert("Select playlist first");
+                alert("Select a playlist first");
                 return;
             }
             contentPopup.classList.remove("hidden");
+            // TODO: you might want to store which subheading was clicked
+            // e.g. currentSubheadingId = subId;
         };
 
         li.querySelector(".del-sub").onclick = (e) => {
             e.stopPropagation();
-            li.remove();
+
+            const subId = li.dataset.subId;
+
+            if (subId) {
+                if (!confirm("Delete this subheading?")) return;
+                deleteSubheading(subId, () => li.remove());
+            } else {
+                li.remove();
+            }
         };
 
         ul.appendChild(li);
     };
 
-    subs.forEach(renderSubItem);
+    // Render existing subheadings (with IDs if from DB)
+    subs.forEach(sub => {
+        // Expecting sub = { title: "...", id: "..." } or just string
+        if (typeof sub === "string") {
+            renderSubItem(sub);
+        } else {
+            renderSubItem(sub.title || sub.name, sub.id || sub._id);
+        }
+    });
 
-    // Click to open playlist → load its content
+    // ─── Select playlist ─────────────────────────────────────────
     header.querySelector(".menu-title").onclick = (e) => {
         e.stopPropagation();
 
-        // Remove active from others
-        document.querySelectorAll(".playlist-item-container").forEach(el => {
-            el.classList.remove("active");
-        });
+        document.querySelectorAll(".playlist-item-container").forEach(el => el.classList.remove("active"));
         container.classList.add("active");
 
         currentPlaylistId = playlistId;
@@ -260,124 +221,98 @@ function createPlaylistItem(name, subs = [], playlistId) {
         const isHidden = ul.classList.toggle("hidden");
         header.querySelector(".arrow").textContent = isHidden ? "▼" : "▲";
 
-        // Load content for this playlist
         loadContentForPlaylist(playlistId);
     };
 
+    // ─── Add sub-heading (with popup) ────────────────────────────
     header.querySelector(".add-sub-btn").onclick = (e) => {
         e.stopPropagation();
-        const newSub = prompt("New sub-heading:");
-        if (newSub?.trim()) {
-            renderSubItem(newSub);
-            ul.classList.remove("hidden");
-            header.querySelector(".arrow").textContent = "▲";
-        }
+
+        const input = document.getElementById("newSubheadingInput");
+        const saveBtn = document.getElementById("saveNewSubheading");
+
+        input.value = "";
+        subheadingPopup.classList.remove("hidden");
+        input.focus();
+
+        const handleSave = () => {
+            const newSub = input.value.trim();
+            if (newSub) {
+                renderSubItem(newSub); // no ID yet → local only
+                ul.classList.remove("hidden");
+                header.querySelector(".arrow").textContent = "▲";
+                // TODO: save to backend → addSubheading(playlistId, newSub, (newId) => {
+                //   li.dataset.subId = newId;   // update after save
+                // })
+            }
+            subheadingPopup.classList.add("hidden");
+            cleanup();
+        };
+
+        const handleKey = (ev) => {
+            if (ev.key === "Enter") {
+                ev.preventDefault();
+                handleSave();
+            }
+        };
+
+        const cleanup = () => {
+            saveBtn.removeEventListener("click", handleSave);
+            input.removeEventListener("keydown", handleKey);
+            document.getElementById("closeSubheadingPopup").removeEventListener("click", cleanup);
+        };
+
+        saveBtn.addEventListener("click", handleSave);
+        input.addEventListener("keydown", handleKey);
+        document.getElementById("closeSubheadingPopup").addEventListener("click", cleanup);
     };
 
+    // Edit playlist name
     header.querySelector(".edit-pl").onclick = (e) => {
         e.stopPropagation();
         const newName = prompt("Rename playlist:", name);
         if (newName?.trim()) {
             header.querySelector(".pl-name").textContent = newName.trim();
-            // TODO: send rename to backend
+            // TODO: renamePlaylist(playlistId, newName.trim())
         }
     };
 
+    // Delete playlist
     header.querySelector(".del-pl").onclick = (e) => {
         e.stopPropagation();
-        if (confirm(`Delete playlist "${name}"?`)) {
+        if (!confirm(`Delete playlist "${name}"?`)) return;
+
+        deletePlaylist(playlistId, () => {
             container.remove();
             if (currentPlaylistId === playlistId) {
                 currentPlaylistId = null;
                 grid.innerHTML = "<p style='text-align:center; color:#94a3b8;'>Select a playlist</p>";
             }
-            // TODO: send delete to backend
-        }
+        });
     };
+
+
+    //Delete Subheadings
+     header.querySelector(".del-pl").onclick = (e) => {
+            e.stopPropagation();
+            if (!confirm(`Delete playlist "${name}"?`)) return;
+
+            deletePlaylist(playlistId, () => {
+                container.remove();
+                if (currentPlaylistId === playlistId) {
+                    currentPlaylistId = null;
+                    grid.innerHTML = "<p style='text-align:center; color:#94a3b8;'>Select a playlist</p>";
+                }
+            });
+        };
 
     container.append(header, ul);
     playlistContainer.appendChild(container);
 }
 
-// ───────────────────────────────────────────────
-// Load Playlists
-// ───────────────────────────────────────────────
-function loadPlaylistsFromDB() {
-    $.ajax({
-        url: "/getPlaylists",
-        method: "GET",
-        success: (playlists) => {
-            playlistContainer.innerHTML = "";
-            playlists.forEach(pl => {
-                createPlaylistItem(pl.name, pl.subs || [], pl.id);
-            });
-            if (playlists.length === 0) {
-                playlistContainer.innerHTML = "<p style='color:#94a3b8; text-align:center;'>No playlists yet</p>";
-            }
-        },
-        error: () => {
-            playlistContainer.innerHTML = "<p style='color:#ef4444;'>Error loading playlists</p>";
-        }
-    });
-}
 
-// ───────────────────────────────────────────────
-// Load Content FOR ONE PLAYLIST
-// ───────────────────────────────────────────────
-function loadContentForPlaylist(playlistId) {
-    if (!playlistId) return;
-
-    grid.innerHTML = "<p style='text-align:center; color:#94a3b8;'>Loading...</p>";
-
-    $.ajax({
-        url: `/getContents/${playlistId}`,
-        method: "GET",
-        success: (contents) => {
-            grid.innerHTML = "";
-            if (contents.length === 0) {
-                grid.innerHTML = "<p style='text-align:center; color:#94a3b8;'>No content in this playlist yet</p>";
-            }
-            contents.forEach(item => renderContentCard(item));
-        },
-        error: () => {
-            grid.innerHTML = "<p style='color:#ef4444; text-align:center;'>Error loading content</p>";
-        }
-    });
-}
-
-// ───────────────────────────────────────────────
-// Create Playlist
-// ───────────────────────────────────────────────
-document.getElementById("createPlaylist").onclick = () => {
-    const name = document.getElementById("playlistName").value.trim();
-    const subsText = document.getElementById("subItems").value.trim();
-    const subs = subsText ? subsText.split(",").map(s => s.trim()).filter(Boolean) : [];
-
-    if (!name) return alert("Enter playlist name");
-
-    $.ajax({
-        url: "/sendPlayList",
-        method: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({ name, subs }),
-        success: () => {
-            loadPlaylistsFromDB();
-            popup.classList.add("hidden");
-            document.getElementById("playlistName").value = "";
-            document.getElementById("subItems").value = "";
-        },
-        error: (err) => {
-            alert("Could not create playlist");
-            console.error(err);
-        }
-    });
-};
-
-// ───────────────────────────────────────────────
-// Init
-// ───────────────────────────────────────────────
+// ─── Init ────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
     loadPlaylistsFromDB();
-    // Do NOT auto-load all content anymore — wait for playlist selection
     grid.innerHTML = "<p style='text-align:center; color:#94a3b8; padding:40px;'>Select a playlist to view content</p>";
 });

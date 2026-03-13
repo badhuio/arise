@@ -19,25 +19,31 @@ public class PlaylistService {
 
     public Boolean createPlaylist(PlaylistDTO dto) {
 
-    try {
-        PlaylistEntity entity = new PlaylistEntity();
-        entity.setName(dto.getName());
-        entity.setSubs(dto.getSubs());
+        try {
+            PlaylistEntity entity = new PlaylistEntity();
 
-        System.out.println("Name: " + entity);
+            entity.setName(dto.getName());
+            entity.setSubs(dto.getSubs());
 
-        playlistRepository.save(entity);
+            playlistRepository.save(entity);
 
-        return true;
-    }catch (Exception e){
-        e.printStackTrace();
-        return false;
-    }
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public List<PlaylistEntity> getAllPlaylists() {
         return playlistRepository.findAll();
     }
+
+    public void deletePlaylist(Long id){
+          playlistRepository.deleteById(id);
+    }
+
+
 
 }
 

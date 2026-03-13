@@ -27,6 +27,17 @@
         </div>
     </div>
 
+    <div id="subheading-popup" class="popup hidden">
+        <div class="popup-box">
+            <h3>Add Sub-heading</h3>
+            <input type="text" id="newSubheadingInput" placeholder="Enter sub-heading name">
+            <div class="popup-actions">
+                <button id="saveSubheading" class="btn-accent">Add</button>
+                <button id="closeSubheadingPopup" class="btn-accent">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div id="content-popup" class="popup hidden">
         <div class="popup-box">
             <h3>Add Content</h3>
@@ -49,7 +60,7 @@
             <input type="hidden" id="selectedPlaylistId" value="">
 
             <div class="popup-actions">
-                <button id="saveContent" class="btn-accent">Add to Collection</button> <br> <br>
+                <button id="saveContent" class="btn-accent">Add to Collection</button> <br> <br> <br>
                 <button id="closeContentPopup" class="btn-accent">Cancel</button>
             </div>
         </div>
@@ -64,5 +75,6 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/playlist/playlist.js"></script>
+<script src="/js/playlist/playlistdata.js"></script>
 </body>
 </html>
