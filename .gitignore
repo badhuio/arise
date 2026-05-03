@@ -37,3 +37,5 @@ build/
 #credintials
 src/main/resources/application.properties
 src/main/java/com/badhu/config/SecurityConfig.java
+uploads/
+arise/
