@@ -36,6 +36,9 @@ $(document).ready(function (){
                                window.location.href="/home";
                            },3025);
            },
+           error: function(err){
+                popup("Error",err.responseText);
+           }
 
        })
 
