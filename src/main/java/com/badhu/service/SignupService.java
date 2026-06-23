@@ -4,8 +4,14 @@ import com.badhu.converter.Converters;
 import com.badhu.dao.UserRepository;
 import com.badhu.dto.LoginDTO;
 import com.badhu.dto.SignupDTO;
+import com.badhu.dto.successDTO.apiResponse;
+import com.badhu.entity.LoginEntity;
 import com.badhu.entity.SignupEntity;
+import com.badhu.exception.DataBaseExceptions;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class SignupService {
@@ -16,40 +22,66 @@ public class SignupService {
         { this.userRepository = userRepository; }
 
     //signup_saving
-    public String signupSaving(SignupDTO dto){
+    public ResponseEntity<apiResponse> signupSaving(SignupDTO dto){
 
-        try{
-
-            if (dto.getUsername()==null|| dto.getEmail()==null || dto.getPassword()==null){
-                throw new IllegalArgumentException("All fields are required");
+            if (dto.getUsername() == null){
+                throw new ResponseStatusException(HttpStatusCode.valueOf(409),"username is required");
+            }else if(dto.getEmail()==null){
+                throw new ResponseStatusException(HttpStatusCode.valueOf(409),"email is required");
+            } else if(dto.getPassword()==null){
+                throw new ResponseStatusException(HttpStatusCode.valueOf(409),"password is required");
             }
 
             SignupEntity entity = Converters.tosignupEntity(dto);
 
-            SignupEntity response = userRepository.save(entity);
+            boolean result = userRepository.existsByEmail(entity.getEmail());
 
+            if(result == true){
+                throw new ResponseStatusException(HttpStatusCode.valueOf(409),"email already exists");
+            }
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            entity.setPassword(PasswordService.hash(entity.getPassword()));
+            System.out.println(entity);
+        try {
+            userRepository.save(entity);
+            return ResponseEntity.status(200).body(new apiResponse("user created successfully"));
+        } catch (DataBaseExceptions e) {
+            throw new DataBaseExceptions("Database error");
         }
-
-        return null;
     }
 
     //login_checking
-    public boolean loginchecking(LoginDTO dto){
-        try{
-            if(dto.getEmail()==null || dto.getPassword()==null){
-                throw new IllegalArgumentException("All fields are required");
+    public ResponseEntity<apiResponse> loginchecking(LoginDTO dto){
+
+        boolean login;
+
+            if(dto.getEmail()==null){
+                throw new ResponseStatusException(HttpStatusCode.valueOf(409),"Email required");
+            }else if(dto.getPassword()==null) {
+                throw new ResponseStatusException(HttpStatusCode.valueOf(409),"Password required");
             }
 
-            boolean result =  userRepository.existsByEmailAndPassword(dto.getEmail(),dto.getPassword());
+        try {
+            SignupEntity user = userRepository.findByEmail(dto.getEmail());
 
-            System.out.println("Login Result: " +result);
-            return result;
-        }catch (Exception e){
-            throw new RuntimeException(e);
+            if(user == null){
+                throw new ResponseStatusException(HttpStatusCode.valueOf(401),"User not found");
+            }
+
+            login = PasswordService.verify(
+                    user.getPassword(),
+                    dto.getPassword()
+            );
+                System.out.println(login);
+            }catch (DataBaseExceptions e){
+                throw new DataBaseExceptions("Database error");
+            }
+        if (login == true) {
+            return ResponseEntity .status(200) .body(new apiResponse("user login successfully"));
+        }else {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "user login failed");
         }
+
     }
 
 }

@@ -6,14 +6,14 @@ $(document).ready(function () {
         let username = $("#username").val().trim();
         let email = $("#email").val().trim();
         let password = $("#password").val().trim();
-        let confpassword = $("#confirm_password").val().trim();
+        let confirm_password = $("#confirm_password").val().trim();
 
-        if (!username || !email || !password || !confpassword) {
+        if (!username || !email || !password || !confirm_password) {
             alert("Please fill all fields");
             return;
         }
 
-        if (password !== confpassword) {
+        if (password !== confirm_password) {
             alert("Password mismatch!");
             return;
         }
@@ -36,15 +36,42 @@ $.ajax({
     contentType:"application/json",
     data:JSON.stringify(data),
     success: function (res){
-        alert("Signup success");
-        window.location.href = "/login";
+
+         popup("Registration Successful","Your account has been created. Redirecting to login...");
+
+         setTimeout(()=>{
+                window.location.href="/login";
+            },3025);
     },
     error: function (err){
-        alert("Signup failed");
+        popup("Error",err.responseText);
     }
 });
 
-        // console.log(username, email, password);
+    });
+
+
+//popup
+    function popup(title,message){
+
+                $("#popup-title").text(title);
+                $("#popup-message").text(message);
+
+                $("#popup").fadeIn();
+
+                setTimeout(()=>{
+                    $("#popup").fadeOut();
+                },3018);
+
+            }
+
+    //toggle-password and toggle-password 1 disable and enable
+    $("#password, #confirm_password").on("input", function(){
+
+        let target = $(this).attr("id");
+
+        $(`.toggle-password[data-target='${target}']`)
+            .toggle($(this).val().trim() !== "");
 
     });
 

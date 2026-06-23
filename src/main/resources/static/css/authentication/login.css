@@ -111,3 +111,24 @@ body {
     padding: 2px;
     text-decoration: none;
 }
+
+#popup{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 350px;
+    padding: 30px;
+    background: rgba(8,25,45,.95);
+    border: 1px solid #00d9ff;
+    border-radius: 15px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 0 20px #00d9ff;
+    display: none;
+    z-index: 9999;
+}
+
+#popup-title{
+    color:#00d9ff;
+}

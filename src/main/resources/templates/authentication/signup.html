@@ -29,13 +29,13 @@
         <div class="su-pass-group">
             <input type="password" placeholder="Create Password"
                    class="input-field" id="password" required>
-            <span class="toggle-password" data-target="password">👁</span>
+            <span class="toggle-password" id="toggle-password" data-target="password">👁</span>
         </div>
 
         <div class="su-pass-group">
             <input type="password" placeholder="Confirm Password"
                    class="input-field" id="confirm_password" required>
-            <span class="toggle-password" data-target="confirm_password">👁</span>
+            <span class="toggle-password" id="toggle-password1" data-target="confirm_password">👁</span>
         </div>
 
 
@@ -43,6 +43,11 @@
 
         <a href="login" class="login-btn" id="login-redirect">Access Existing Profile (Log In)</a>
     </form>
+</div>
+
+<div id="popup">
+    <h2 id="popup-title"></h2>
+    <p id="popup-message"></p>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

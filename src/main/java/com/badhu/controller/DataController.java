@@ -3,12 +3,13 @@ package com.badhu.controller;
 import com.badhu.dto.LoginDTO;
 import com.badhu.dto.PlaylistDTO;
 import com.badhu.dto.SignupDTO;
+import com.badhu.dto.successDTO.apiResponse;
 import com.badhu.entity.ContentEntity;
 import com.badhu.entity.PlaylistEntity;
 import com.badhu.service.ContentService;
 import com.badhu.service.PlaylistService;
-import com.badhu.service.SignupService;
-import com.badhu.service.SubheadService;
+import com.badhu.service.SignupService;import com.badhu.service.SubheadService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,15 +35,12 @@ public class DataController {
     }
 
     @PostMapping("/signup_saving")
-    public String signup_saving(@RequestBody SignupDTO dto){
-        System.out.println("username: "+ dto);
-        signupService.signupSaving(dto);
-        return null;
+    public ResponseEntity<apiResponse> signup_saving(@RequestBody SignupDTO dto) {
+        return signupService.signupSaving(dto);
     }
 
     @PostMapping("/login_checking")
-    public boolean login_checking(@RequestBody LoginDTO dto){
-        System.out.println("username: "+ dto.getEmail());
+    public ResponseEntity<apiResponse> login_checking(@RequestBody LoginDTO dto){
         return signupService.loginchecking(dto);
     }
 

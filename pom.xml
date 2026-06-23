@@ -124,6 +124,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Argon2id(password hasher) -->
+		<dependency>
+			<groupId>de.mkammerer</groupId>
+			<artifactId>argon2-jvm</artifactId>
+			<version>2.12</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -30,17 +30,30 @@ $(document).ready(function (){
            contentType: "application/json",
            data:JSON.stringify(login_data),
            success: function (res) {
-               console.log("RESPONSE:", res, typeof res);
+               popup("Login Successful", "Redirecting to home...");
 
-               if (res === true) {
-                   alert("login success");
-                   window.location.href = "/home";
-               } else {
-                   alert("Invalid email or password");
-               }
+                        setTimeout(()=>{
+                               window.location.href="/home";
+                           },3025);
            },
 
        })
 
     })
+
+
+
+    //popup
+    function popup(title,message){
+
+                    $("#popup-title").text(title);
+                    $("#popup-message").text(message);
+
+                    $("#popup").fadeIn();
+
+                    setTimeout(()=>{
+                        $("#popup").fadeOut();
+                    },3018);
+
+                }
 })
