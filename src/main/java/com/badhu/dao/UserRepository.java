@@ -8,8 +8,5 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<SignupEntity, Long>{
     boolean existsByEmail(String email);
-
-    boolean existsByEmailAndPassword(String email, String password);
-
     SignupEntity findByEmail(String email);
 }

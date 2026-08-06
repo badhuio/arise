@@ -19,7 +19,7 @@
         <div class="popup-box">
             <h3>Create Playlist</h3>
             <input type="text" id="playlistName" placeholder="Playlist name">
-            <input type="text" id="subItems" placeholder="Initial sub-headings (comma separated)">
+<!--            <input type="text" id="subItems" placeholder="Initial sub-headings (comma separated)">-->
             <div class="popup-actions">
                 <button id="createPlaylist" class="btn-accent">Create</button> <br><br>
                 <button id="closePopup" class="btn-accent">Cancel</button>
@@ -30,7 +30,7 @@
     <div id="subheading-popup" class="popup hidden">
         <div class="popup-box">
             <h3>Add Sub-heading</h3>
-            <input type="text" id="newSubheadingInput" placeholder="Enter sub-heading name">
+            <input type="text" id="subItems" placeholder="Enter sub-heading name">  <!--newSubheadingInput-->
             <div class="popup-actions">
                 <button id="saveSubheading" class="btn-accent">Add</button>
                 <button id="closeSubheadingPopup" class="btn-accent">Cancel</button>
@@ -73,6 +73,22 @@
         <div class="playlist-grid" id="playlist-grid"></div>
     </main>
 </div>
+
+
+<!--popup-->
+<div id="editPopup" class="popup hidden">
+    <div class="popup-box">
+        <h3>Edit Playlist</h3>
+
+        <input id="editedName" type="text">
+
+        <div class="popup-actions">
+            <button id="saveBtn" class="btn-accent">Save</button>
+            <button onclick="closePopup()" class="btn-accent">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/playlist/playlist.js"></script>
 <script src="/js/playlist/playlistdata.js"></script>

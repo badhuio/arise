@@ -30,16 +30,19 @@ $(document).ready(function (){
            contentType: "application/json",
            data:JSON.stringify(login_data),
            success: function (res) {
+                          console.log(res);
+
                popup("Login Successful", "Redirecting to home...");
 
-                        setTimeout(()=>{
+               // saving user_name to local storage
+                    localStorage.setItem("username",res.username);
+                           setTimeout(() => {
                                window.location.href="/home";
                            },3025);
            },
            error: function(err){
                 popup("Error",err.responseText);
            }
-
        })
 
     })

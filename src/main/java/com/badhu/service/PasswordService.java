@@ -18,6 +18,6 @@ public class PasswordService {
     public static boolean verify(String hash, String password) {
         return argon2.verify(hash,password.toCharArray());
     }
-
+    
 
 }

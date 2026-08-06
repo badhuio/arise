@@ -44,7 +44,7 @@ public class SignupService {
             System.out.println(entity);
         try {
             userRepository.save(entity);
-            return ResponseEntity.status(200).body(new apiResponse("user created successfully"));
+            return ResponseEntity.status(200).body(new apiResponse("user created successfully",null));
         } catch (DataBaseExceptions e) {
             throw new DataBaseExceptions("Database error");
         }
@@ -68,16 +68,16 @@ public class SignupService {
                 throw new ResponseStatusException(HttpStatusCode.valueOf(401),"User not found");
             }
 
-            login = PasswordService.verify(
-                    user.getPassword(),
-                    dto.getPassword()
-            );
+            login = PasswordService.verify(user.getPassword(), dto.getPassword());
                 System.out.println(login);
             }catch (DataBaseExceptions e){
                 throw new DataBaseExceptions("Database error");
             }
+
         if (login == true) {
-            return ResponseEntity .status(200) .body(new apiResponse("user login successfully"));
+            //jwt + cache implementing
+            SignupEntity username = userRepository.findByEmail(dto.getEmail());
+            return ResponseEntity .status(200) .body(new apiResponse("user login successfully", username.getUsername()));
         }else {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "user login failed");
         }

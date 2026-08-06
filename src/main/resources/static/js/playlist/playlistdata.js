@@ -1,6 +1,21 @@
 // playlist-data.js
+// Backend/data layer — pairs with playlist-ui.js (UI layer).
+// Implements the stubs left in playlist-ui.js section 9.
 
-// ─── Save new content ────────────────────────────────────────────
+/* ════════════════════════════════════════════════════════════════
+   1. Event Listeners
+   ════════════════════════════════════════════════════════════════ */
+
+//saveContentBtn.onclick = saveNewContent;
+
+document.getElementById("createPlaylist").onclick = createNewPlaylist;
+
+
+/* ════════════════════════════════════════════════════════════════
+   2. Content Actions
+   ════════════════════════════════════════════════════════════════ */
+
+// ─── Add Content ───────────────────────────────────────────────────
 function saveNewContent() {
     if (!currentPlaylistId) {
         alert("Please select a playlist first!");
@@ -13,7 +28,6 @@ function saveNewContent() {
     const file  = fileInput.files[0];
 
     if (!title) return alert("Please enter a title");
-
     if (type !== "link" && !file) return alert("Please select a file");
     if (type === "link"  && !link) return alert("Please enter a link/URL");
 
@@ -21,6 +35,9 @@ function saveNewContent() {
     formData.append("title", title);
     formData.append("type", type);
     formData.append("playlistId", currentPlaylistId);
+    if (currentSubheadingId) {
+        formData.append("subheadingId", currentSubheadingId);
+    }
 
     if (type === "link") {
         formData.append("source", link);
@@ -35,10 +52,12 @@ function saveNewContent() {
         processData: false,
         contentType: false,
         success: (response) => {
+            console.log("res of save:", response);
             contentPopup.classList.add("hidden");
             contentTitleInput.value = "";
             fileInput.value = "";
             linkInput.value = "";
+            currentSubheadingId = null;
             renderContentCard(response);    // ← calls UI layer
         },
         error: (xhr) => {
@@ -48,10 +67,40 @@ function saveNewContent() {
     });
 }
 
-saveContentBtn.onclick = saveNewContent;
+// ─── Edit Content ───────────────────────────────────────────────────
+function updateContentTitle(contentId, newTitle, onSuccess) {
+    $.ajax({
+        url: `/updateContentTitle/${contentId}`,
+        method: "PATCH",
+        contentType: "application/json",
+        data: JSON.stringify({ title: newTitle }),
+        success: () => onSuccess?.(),
+        error: (xhr) => {
+            console.error("Update content title failed", xhr);
+            alert("Failed to update content title");
+        }
+    });
+}
+
+// ─── Delete Content ──────────────────────────────────────────────────
+function deleteContent(contentId, onSuccess) {
+    $.ajax({
+        url: `/deleteContent/${contentId}`,
+        method: "DELETE",
+        success: () => onSuccess?.(),
+        error: (xhr) => {
+            console.error("Delete failed", xhr);
+            alert("Failed to delete content");
+        }
+    });
+}
 
 
-// ─── Load all playlists ──────────────────────────────────────────
+/* ════════════════════════════════════════════════════════════════
+   3. Playlist Actions
+   ════════════════════════════════════════════════════════════════ */
+
+// ─── Load all playlists ──────────────────────────────────────────────
 function loadPlaylistsFromDB() {
     $.ajax({
         url: "/getPlaylists",
@@ -72,8 +121,64 @@ function loadPlaylistsFromDB() {
     });
 }
 
+// ─── Add Playlist ────────────────────────────────────────────────────
+function createNewPlaylist() {
+    const name     = document.getElementById("playlistName").value.trim();
+    const subsText = document.getElementById("subItems").value.trim();
+    const subs     = subsText ? subsText.split(",").map(s => s.trim()).filter(Boolean) : [];
 
-// ─── Load content of one playlist ────────────────────────────────
+    if (!name) return alert("Enter playlist name");
+
+    $.ajax({
+        url: "/sendPlayList",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ name, subs }),
+        success: () => {
+            loadPlaylistsFromDB();
+            popup.classList.add("hidden");
+            document.getElementById("playlistName").value = "";
+            document.getElementById("subItems").value = "";
+        },
+        error: (err) => {
+            alert("Could not create playlist");
+            console.error(err);
+        }
+    });
+}
+
+// ─── Edit Playlist ───────────────────────────────────────────────────
+// NOTE: original used method "UPDATE", which is not a valid HTTP verb —
+// fixed to "PUT", and the success callback (left empty/unclosed in the
+// original) now actually does something.
+function playlistTitleEdit(playlistId, newPlaylistTitle, onSuccess) {
+    $.ajax({
+        url: `/playlistTitleEdit/${playlistId}`,
+        method: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ title: newPlaylistTitle }),
+        success: () => onSuccess?.(),
+        error: (xhr) => {
+            console.error("Playlist title update failed", xhr);
+            alert("Failed to update playlist title");
+        }
+    });
+}
+
+// ─── Delete Playlist ──────────────────────────────────────────────────
+function deletePlaylist(playlistId, onSuccess) {
+    $.ajax({
+        url: `/deletePlaylist/${playlistId}`,
+        method: "DELETE",
+        success: () => onSuccess?.(),
+        error: (xhr) => {
+            console.error("Delete failed", xhr);
+            alert("Failed to delete playlist");
+        }
+    });
+}
+
+// ─── Load content of one playlist (used when a playlist is selected) ──
 function loadContentForPlaylist(playlistId) {
     if (!playlistId) return;
 
@@ -97,64 +202,32 @@ function loadContentForPlaylist(playlistId) {
 }
 
 
-// ─── Create new playlist ─────────────────────────────────────────
-document.getElementById("createPlaylist").onclick = () => {
-    const name    = document.getElementById("playlistName").value.trim();
-    const subsText = document.getElementById("subItems").value.trim();
-    const subs    = subsText ? subsText.split(",").map(s => s.trim()).filter(Boolean) : [];
+/* ════════════════════════════════════════════════════════════════
+   4. Subheading Actions
+   ════════════════════════════════════════════════════════════════ */
 
-    if (!name) return alert("Enter playlist name");
 
+
+
+// ─── Edit Subheading ────────────────────────────────────────────────
+// NOTE: original was `d=function subheadTitleEdit(subId, new)`, which is
+// invalid JS — "new" is a reserved keyword and can't be a parameter name,
+// and "d=function ..." isn't a valid declaration. Fixed below.
+function subheadTitleEdit(subId, newTitle, onSuccess) {
     $.ajax({
-        url: "/sendPlayList",
-        method: "POST",
+        url: `/subheadTitleEdit/${subId}`,
+        method: "PUT",
         contentType: "application/json",
-        data: JSON.stringify({ name, subs }),
-        success: () => {
-            loadPlaylistsFromDB();
-            popup.classList.add("hidden");
-            document.getElementById("playlistName").value = "";
-            document.getElementById("subItems").value = "";
-        },
-        error: (err) => {
-            alert("Could not create playlist");
-            console.error(err);
-        }
-    });
-};
-
-
-// ─── Future placeholders (to be implemented) ─────────────────────
-function deleteContent(contentId, onSuccess) {
-    // TODO: $.ajax DELETE /content/:id
-
-     $.ajax({
-            url : `/deleteContent/${contentId}`,
-            method : "DELETE",
-            success : () => onSuccess?. (),
-            error: (xhr) => {                             // 6
-                   console.error("Delete failed", xhr);
-                   alert("Failed to delete playlist");
-            }
-        });
-
-    console.warn("deleteContent not implemented yet");
-    onSuccess?.();
-}
-
-function deletePlaylist(playlistId, onSuccess) {
-    // TODO: $.ajax DELETE /playlist/:id
-    $.ajax({
-        url : `/deletePlaylist/${playlistId}`,
-        method : "DELETE",
-        success : () => onSuccess?. (),
-        error: (xhr) => {                             // 6
-               console.error("Delete failed", xhr);
-               alert("Failed to delete playlist");
+        data: JSON.stringify({ title: newTitle }),
+        success: () => onSuccess?.(),
+        error: (xhr) => {
+            console.error("Subheading title update failed", xhr);
+            alert("Failed to update subheading title");
         }
     });
 }
 
+// ─── Delete Subheading ───────────────────────────────────────────────
 function deleteSubheading(subId, onSuccess) {
     $.ajax({
         url: `/deleteSubheading/${subId}`,
@@ -166,14 +239,3 @@ function deleteSubheading(subId, onSuccess) {
         }
     });
 }
-
-
-//function updateContentTitle(contentId, newTitle) {
-//    // TODO: PUT /content/:id { title: newTitle }
-//    $.ajax({
-//        url: `/updateContentTitle/${contentId}`,
-//        method : "PATCH",
-//        success :
-//    });
-//    console.warn("updateContentTitle not implemented yet");
-//}
